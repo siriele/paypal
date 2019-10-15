@@ -467,10 +467,23 @@ type (
 		Value    string `json:"value"`
 	}
 
+	PurchaseUnitPayments struct {
+		Authorizations []Authorization `json:"authorizations,omitempty"`
+		Captures       []Capture       `json:"captures,omitempty"`
+		Refunds        []Refund        `json:"refunds,omitempty"`
+	}
 	// PurchaseUnit struct
 	PurchaseUnit struct {
-		ReferenceID string              `json:"reference_id"`
-		Amount      *PurchaseUnitAmount `json:"amount,omitempty"`
+		ReferenceID    string                `json:"reference_id"`
+		Amount         *PurchaseUnitAmount   `json:"amount,omitempty"`
+		Payee          *PayeeForOrders       `json:"payee,omitempty"`
+		Description    string                `json:"description,omitempty"`
+		CustomID       string                `json:"custom_id,omitempty"`
+		InvoiceID      string                `json:"invoice_id,omitempty"`
+		SoftDescriptor string                `json:"soft_descriptor,omitempty"`
+		Items          []Item                `json:"items,omitempty"`
+		Shipping       *ShippingDetail       `json:"shipping,omitempty"`
+		Payments       *PurchaseUnitPayments `json:"payments,omitempty"`
 	}
 
 	// TaxInfo used for orders.
@@ -896,19 +909,19 @@ type (
 	VerifyWebhookResponse struct {
 		VerificationStatus string `json:"verification_status,omitempty"`
 	}
-	
+
 	WebhookEvent struct {
-		ID              string           `json:"id"`
-		CreateTime      time.Time        `json:"create_time"`
-		ResourceType    string           `json:"resource_type"`
-		EventType       string           `json:"event_type"`
-		Summary         string           `json:"summary,omitempty"`
-		Resource        Resource         `json:"resource"`
-		Links           []Link           `json:"links"`
-		EventVersion    string           `json:"event_version,omitempty"`
-		ResourceVersion string           `json:"resource_version,omitempty"`
+		ID              string    `json:"id"`
+		CreateTime      time.Time `json:"create_time"`
+		ResourceType    string    `json:"resource_type"`
+		EventType       string    `json:"event_type"`
+		Summary         string    `json:"summary,omitempty"`
+		Resource        Resource  `json:"resource"`
+		Links           []Link    `json:"links"`
+		EventVersion    string    `json:"event_version,omitempty"`
+		ResourceVersion string    `json:"resource_version,omitempty"`
 	}
-	
+
 	Resource struct {
 		// Payment Resource type
 		ID                     string                  `json:"id,omitempty"`
@@ -928,7 +941,7 @@ type (
 		// Common
 		Links []Link `json:"links,omitempty"`
 	}
-	
+
 	CaptureSellerBreakdown struct {
 		GrossAmount         PurchaseUnitAmount  `json:"gross_amount"`
 		PayPalFee           PurchaseUnitAmount  `json:"paypal_fee"`

@@ -62,8 +62,8 @@ func (c *Client) UpdateOrder(orderID string, purchaseUnits []PurchaseUnitRequest
 
 // AuthorizeOrder - https://developer.paypal.com/docs/api/orders/v2/#orders_authorize
 // Endpoint: POST /v2/checkout/orders/ID/authorize
-func (c *Client) AuthorizeOrder(orderID string, authorizeOrderRequest AuthorizeOrderRequest) (*Authorization, error) {
-	auth := &Authorization{}
+func (c *Client) AuthorizeOrder(orderID string, authorizeOrderRequest AuthorizeOrderRequest) (*AuthorizeOrderResponse, error) {
+	auth := &AuthorizeOrderResponse{}
 
 	req, err := c.NewRequest("POST", fmt.Sprintf("%s%s", c.APIBase, "/v2/checkout/orders/"+orderID+"/authorize"), authorizeOrderRequest)
 	if err != nil {
