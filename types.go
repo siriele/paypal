@@ -169,7 +169,7 @@ type (
 		ID               string                `json:"id,omitempty"`
 		CustomID         string                `json:"custom_id,omitempty"`
 		InvoiceID        string                `json:"invoice_id,omitempty"`
-		Status           string                `json:"status,omitempty"`
+		Status           AuthorizationStatus   `json:"status,omitempty"`
 		StatusDetails    *CaptureStatusDetails `json:"status_details,omitempty"`
 		Amount           *PurchaseUnitAmount   `json:"amount,omitempty"`
 		SellerProtection *SellerProtection     `json:"seller_protection,omitempty"`
@@ -184,8 +184,8 @@ type (
 		CreateTime    *time.Time             `json:"create_time,omitempty"`
 		UpdateTime    *time.Time             `json:"update_time,omitempty"`
 		ID            string                 `json:"id,omitempty"`
-		Status        string                 `json:"status,omitempty"`
-		Intent        string                 `json:"intent,omitempty"`
+		Status        OrderStatus            `json:"status,omitempty"`
+		Intent        PaymentIntent          `json:"intent,omitempty"`
 		PurchaseUnits []PurchaseUnitRequest  `json:"purchase_units,omitempty"`
 		Payer         *PayerWithNameAndPhone `json:"payer,omitempty"`
 	}
@@ -228,7 +228,7 @@ type (
 	}
 
 	PaymentCaptureResponse struct {
-		Status           string                `json:"status,omitempty"`
+		Status           CaptureStatus         `json:"status,omitempty"`
 		StatusDetails    *CaptureStatusDetails `json:"status_details,omitempty"`
 		ID               string                `json:"id,omitempty"`
 		Amount           *Money                `json:"amount,omitempty"`
@@ -546,8 +546,8 @@ type (
 	// Order struct
 	Order struct {
 		ID            string         `json:"id,omitempty"`
-		Status        string         `json:"status,omitempty"`
-		Intent        string         `json:"intent,omitempty"`
+		Status        OrderStatus    `json:"status,omitempty"`
+		Intent        PaymentIntent  `json:"intent,omitempty"`
 		PurchaseUnits []PurchaseUnit `json:"purchase_units,omitempty"`
 		Links         []Link         `json:"links,omitempty"`
 		CreateTime    *time.Time     `json:"create_time,omitempty"`
@@ -582,7 +582,7 @@ type (
 	// CaptureOrderResponse is the response for capture order
 	CaptureOrderResponse struct {
 		ID            string                 `json:"id,omitempty"`
-		Status        string                 `json:"status,omitempty"`
+		Status        OrderStatus            `json:"status,omitempty"`
 		Payer         *PayerWithNameAndPhone `json:"payer,omitempty"`
 		PurchaseUnits []CapturedPurchaseUnit `json:"purchase_units,omitempty"`
 	}
@@ -739,7 +739,7 @@ type (
 	RefundResponse struct {
 		ID     string              `json:"id,omitempty"`
 		Amount *PurchaseUnitAmount `json:"amount,omitempty"`
-		Status string              `json:"status,omitempty"`
+		Status RefundStatus        `json:"status,omitempty"`
 	}
 
 	// Related struct
@@ -1005,3 +1005,106 @@ func (e *expirationTime) UnmarshalJSON(b []byte) error {
 	*e = expirationTime(i)
 	return nil
 }
+
+type PaymentIntent string
+
+const (
+	// IntentCapture is CAPTURE. The merchant intends to capture payment immediately
+	// after the customer makes a payment.
+	IntentCapture PaymentIntent = "CAPTURE"
+
+	// IntentAuthorize is AUTHORIZE. The merchant intends to authorize a payment and
+	// place funds on hold after the customer makes a payment.
+	// Authorized payments are guaranteed for up to three days
+	// but are available to capture for up to 29 days. After the
+	// three-day honor period, the original authorized payment
+	// expires and you must re-authorize the payment. You must
+	// make a separate request to capture payments on demand.
+	IntentAuthorize PaymentIntent = "AUTHORIZE"
+)
+
+type AuthorizationStatus string
+
+const (
+	// AuthorizationStatusCreated is CREATED. The authorized payment is created. No
+	// captured payments have been made for this authorized payment.
+	AuthorizationStatusCreated AuthorizationStatus = "CREATED"
+	// AuthorizationStatusCaptured is CAPTURED. The authorized payment has one or more captures
+	// against it. The sum of these captured payments is greater
+	// than the amount of the original authorized payment.
+	AuthorizationStatusCaptured AuthorizationStatus = "CAPTURED"
+	//AuthorizationStatusDenied is DENIED. PayPal cannot authorize funds for this authorized payment.
+	AuthorizationStatusDenied AuthorizationStatus = "DENIED"
+	//AuthorizationStatusExpired is EXPIRED. The authorized payment has expired.
+	AuthorizationStatusExpired AuthorizationStatus = "EXPIRED"
+	// AuthorizationStatusPartiallyCaptured is PARTIALLY_CAPTURED. A
+	// captured payment was made for the authorized payment for an
+	// amount that is less than the amount of the original authorized payment.
+	AuthorizationStatusPartiallyCaptured AuthorizationStatus = "PARTIALLY_CAPTURED"
+	// AuthorizationStatusVoided is VOIDED. The authorized payment was voided. No more captured
+	// payments can be made against this authorized payment.
+	AuthorizationStatusVoided AuthorizationStatus = "VOIDED"
+	// AuthorizationStatusPending is PENDING. The created authorization is in pending state.
+	// For more information, see status.details
+	AuthorizationStatusPending AuthorizationStatus = "PENDING"
+)
+
+type CaptureStatus string
+
+const (
+
+	// CaptureStatusCompleted is COMPLETED. The funds for this captured payment
+	// were credited to the payee's PayPal account.
+	CaptureStatusCompleted CaptureStatus = "COMPLETED"
+
+	// CaptureStatusDeclined is DECLINED. The funds could not be captured.
+	CaptureStatusDeclined CaptureStatus = "DECLINED"
+
+	// CaptureStatusPartiallyRefunded is PARTIALLY_REFUNDED. An amount less than this captured payment's
+	// amount was partially refunded to the payer.
+	CaptureStatusPartiallyRefunded CaptureStatus = "PARTIALLY_REFUNDED"
+
+	// CaptureStatusPending isPENDING. The funds for this captured payment was not
+	// yet credited to the payee's PayPal account. For more
+	// information, see status.details
+	CaptureStatusPending CaptureStatus = "PENDING"
+
+	// CaptureStatusRefunded is REFUNDED. An amount greater than or equal to this
+	// captured payment's amount was refunded to the payer.
+	CaptureStatusRefunded CaptureStatus = "REFUNDED"
+)
+
+type OrderStatus string
+
+const (
+	// OrderStatusCreated is CREATED. The order was created with the specified context.
+	OrderStatusCreated OrderStatus = "CREATED"
+
+	// OrderStatusSaved is SAVED. The order was saved and persisted. The order status
+	// continues to be in progress until a capture is made with
+	// final_capture = true for all purchase units within the order.
+	OrderStatusSaved OrderStatus = "SAVED"
+
+	// OrderStatusApproved is APPROVED. The customer approved the payment through the
+	// PayPal wallet or another form of guest or unbranded payment.
+	// For example, a card, bank account, or so on.
+	OrderStatusApproved OrderStatus = "APPROVED"
+
+	// OrderStatusVoided is VOIDED. All purchase units in the order are voided.
+	OrderStatusVoided OrderStatus = "VOIDED"
+
+	// OrderStatusCompleted is COMPLETED. The payment was authorized or the authorized
+	// payment was captured for the order.
+	OrderStatusCompleted OrderStatus = "COMPLETED"
+)
+
+type RefundStatus string
+
+const (
+	// RefundStatusCancelled is CANCELLED. The refund was cancelled.
+	RefundStatusCancelled RefundStatus = "CANCELLED"
+	// RefundStatusPending is PENDING. The refund is pending. For more information, see status_details.reason.
+	RefundStatusPending RefundStatus = "PENDING"
+	// RefundStatusCompleted is COMPLETED. The funds for this transaction were debited to the customer's account.
+	RefundStatusCompleted RefundStatus = "COMPLETED"
+)

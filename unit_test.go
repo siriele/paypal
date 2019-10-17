@@ -258,7 +258,7 @@ func TestOrderUnmarshal(t *testing.T) {
 	}
 
 	if order.ID != "5O190127TN364715T" ||
-		order.Status != "CREATED" ||
+		order.Status != OrderStatusCreated ||
 		order.Links[0].Href != "https://api.paypal.com/v2/checkout/orders/5O190127TN364715T" {
 		t.Errorf("Order decoded result is incorrect, Given: %+v", order)
 	}
