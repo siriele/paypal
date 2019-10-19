@@ -186,7 +186,7 @@ type (
 		ID            string                 `json:"id,omitempty"`
 		Status        OrderStatus            `json:"status,omitempty"`
 		Intent        PaymentIntent          `json:"intent,omitempty"`
-		PurchaseUnits []PurchaseUnitRequest  `json:"purchase_units,omitempty"`
+		PurchaseUnits []PurchaseUnit         `json:"purchase_units,omitempty"`
 		Payer         *PayerWithNameAndPhone `json:"payer,omitempty"`
 	}
 
