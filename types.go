@@ -584,7 +584,7 @@ type (
 		ID            string                 `json:"id,omitempty"`
 		Status        OrderStatus            `json:"status,omitempty"`
 		Payer         *PayerWithNameAndPhone `json:"payer,omitempty"`
-		PurchaseUnits []CapturedPurchaseUnit `json:"purchase_units,omitempty"`
+		PurchaseUnits []PurchaseUnit         `json:"purchase_units,omitempty"`
 	}
 
 	// Payer struct
