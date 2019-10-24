@@ -173,16 +173,16 @@ type (
 		StatusDetails    *CaptureStatusDetails `json:"status_details,omitempty"`
 		Amount           *PurchaseUnitAmount   `json:"amount,omitempty"`
 		SellerProtection *SellerProtection     `json:"seller_protection,omitempty"`
-		CreateTime       *time.Time            `json:"create_time,omitempty"`
-		UpdateTime       *time.Time            `json:"update_time,omitempty"`
-		ExpirationTime   *time.Time            `json:"expiration_time,omitempty"`
+		CreateTime       PTime                 `json:"create_time,omitempty"`
+		UpdateTime       PTime                 `json:"update_time,omitempty"`
+		ExpirationTime   PTime                 `json:"expiration_time,omitempty"`
 		Links            []Link                `json:"links,omitempty"`
 	}
 
 	// AuthorizeOrderResponse .
 	AuthorizeOrderResponse struct {
-		CreateTime    *time.Time             `json:"create_time,omitempty"`
-		UpdateTime    *time.Time             `json:"update_time,omitempty"`
+		CreateTime    PTime                  `json:"create_time,omitempty"`
+		UpdateTime    PTime                  `json:"update_time,omitempty"`
 		ID            string                 `json:"id,omitempty"`
 		Status        OrderStatus            `json:"status,omitempty"`
 		Intent        PaymentIntent          `json:"intent,omitempty"`
@@ -248,8 +248,8 @@ type (
 		Fees              *AmountPayout      `json:"fees,omitempty"`
 		PayoutBatchID     string             `json:"payout_batch_id,omitempty"`
 		BatchStatus       string             `json:"batch_status,omitempty"`
-		TimeCreated       *time.Time         `json:"time_created,omitempty"`
-		TimeCompleted     *time.Time         `json:"time_completed,omitempty"`
+		TimeCreated       PTime              `json:"time_created,omitempty"`
+		TimeCompleted     PTime              `json:"time_completed,omitempty"`
 		SenderBatchHeader *SenderBatchHeader `json:"sender_batch_header,omitempty"`
 	}
 
@@ -276,14 +276,14 @@ type (
 
 	// Capture struct
 	Capture struct {
-		Amount         *Amount    `json:"amount,omitempty"`
-		IsFinalCapture bool       `json:"is_final_capture"`
-		CreateTime     *time.Time `json:"create_time,omitempty"`
-		UpdateTime     *time.Time `json:"update_time,omitempty"`
-		State          string     `json:"state,omitempty"`
-		ParentPayment  string     `json:"parent_payment,omitempty"`
-		ID             string     `json:"id,omitempty"`
-		Links          []Link     `json:"links,omitempty"`
+		Amount         *Amount       `json:"amount,omitempty"`
+		IsFinalCapture bool          `json:"is_final_capture"`
+		CreateTime     PTime         `json:"create_time,omitempty"`
+		UpdateTime     PTime         `json:"update_time,omitempty"`
+		Status         CaptureStatus `json:"state,omitempty"`
+		ParentPayment  string        `json:"parent_payment,omitempty"`
+		ID             string        `json:"id,omitempty"`
+		Links          []Link        `json:"links,omitempty"`
 	}
 
 	// ChargeModel struct
@@ -550,8 +550,8 @@ type (
 		Intent        PaymentIntent  `json:"intent,omitempty"`
 		PurchaseUnits []PurchaseUnit `json:"purchase_units,omitempty"`
 		Links         []Link         `json:"links,omitempty"`
-		CreateTime    *time.Time     `json:"create_time,omitempty"`
-		UpdateTime    *time.Time     `json:"update_time,omitempty"`
+		CreateTime    PTime          `json:"create_time,omitempty"`
+		UpdateTime    PTime          `json:"update_time,omitempty"`
 	}
 
 	// CaptureAmount struct
@@ -726,13 +726,13 @@ type (
 
 	// Refund struct
 	Refund struct {
-		ID            string     `json:"id,omitempty"`
-		Amount        *Amount    `json:"amount,omitempty"`
-		CreateTime    *time.Time `json:"create_time,omitempty"`
-		State         string     `json:"state,omitempty"`
-		CaptureID     string     `json:"capture_id,omitempty"`
-		ParentPayment string     `json:"parent_payment,omitempty"`
-		UpdateTime    *time.Time `json:"update_time,omitempty"`
+		ID            string       `json:"id,omitempty"`
+		Amount        *Amount      `json:"amount,omitempty"`
+		CreateTime    *time.Time   `json:"create_time,omitempty"`
+		Status        RefundStatus `json:"state,omitempty"`
+		CaptureID     string       `json:"capture_id,omitempty"`
+		ParentPayment string       `json:"parent_payment,omitempty"`
+		UpdateTime    PTime        `json:"update_time,omitempty"`
 	}
 
 	// RefundResponse .
