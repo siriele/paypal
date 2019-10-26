@@ -728,18 +728,30 @@ type (
 	Refund struct {
 		ID            string       `json:"id,omitempty"`
 		Amount        *Amount      `json:"amount,omitempty"`
-		CreateTime    *time.Time   `json:"create_time,omitempty"`
+		InvoiceID     string       `json:"invoice_id,omitempty"`
+		CreateTime    PTime        `json:"create_time,omitempty"`
 		Status        RefundStatus `json:"state,omitempty"`
 		CaptureID     string       `json:"capture_id,omitempty"`
 		ParentPayment string       `json:"parent_payment,omitempty"`
 		UpdateTime    PTime        `json:"update_time,omitempty"`
 	}
 
+	RefundRequest struct {
+		ID          string  `json:"id,omitempty"`
+		Amount      *Amount `json:"amount,omitempty"`
+		InvoiceID   string  `json:"invoice_id,omitempty"`
+		NoteToPayer string  `json:"note_to_payer,omitempty"`
+	}
+
 	// RefundResponse .
 	RefundResponse struct {
-		ID     string              `json:"id,omitempty"`
-		Amount *PurchaseUnitAmount `json:"amount,omitempty"`
-		Status RefundStatus        `json:"status,omitempty"`
+		ID          string       `json:"id,omitempty"`
+		InvoiceID   string       `json:"invoice_id,omitempty"`
+		Status      RefundStatus `json:"status,omitempty"`
+		Links       []Link       `json:"links,omitempty"`
+		NoteToPayer string       `json:"note_to_payer,omitempty"`
+		CreateTime  PTime        `json:"create_time,omitempty"`
+		UpdateTime  PTime        `json:"update_time,omitempty"`
 	}
 
 	// Related struct
