@@ -38,17 +38,16 @@ func (c *Client) CaptureAuthorization(authID string, paymentCaptureRequest *Paym
 
 // VoidAuthorization voids a previously authorized payment
 // Endpoint: POST /v2/payments/authorization/ID/void
-func (c *Client) VoidAuthorization(authID string) (*Authorization, error) {
-	buf := bytes.NewBuffer([]byte(""))
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s%s", c.APIBase, "/v2/payments/authorizations/"+authID+"/void"), buf)
-	auth := &Authorization{}
+func (c *Client) VoidAuthorization(authID string) error {
+
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s%s", c.APIBase, "/v2/payments/authorizations/"+authID+"/void"), nil)
 
 	if err != nil {
-		return auth, err
+		return err
 	}
 
-	err = c.SendWithAuth(req, auth)
-	return auth, err
+	err = c.SendWithAuth(req, nil)
+	return err
 }
 
 // ReauthorizeAuthorization reauthorize a Paypal account payment.
