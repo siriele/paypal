@@ -276,14 +276,16 @@ type (
 
 	// Capture struct
 	Capture struct {
-		Amount         *Amount       `json:"amount,omitempty"`
-		IsFinalCapture bool          `json:"is_final_capture"`
-		CreateTime     PTime         `json:"create_time,omitempty"`
-		UpdateTime     PTime         `json:"update_time,omitempty"`
-		Status         CaptureStatus `json:"state,omitempty"`
-		ParentPayment  string        `json:"parent_payment,omitempty"`
-		ID             string        `json:"id,omitempty"`
-		Links          []Link        `json:"links,omitempty"`
+		Amount         *Amount                 `json:"amount,omitempty"`
+		IsFinalCapture bool                    `json:"is_final_capture"`
+		CreateTime     PTime                   `json:"create_time,omitempty"`
+		UpdateTime     PTime                   `json:"update_time,omitempty"`
+		Status         CaptureStatus           `json:"state,omitempty"`
+		ParentPayment  string                  `json:"parent_payment,omitempty"`
+		ID             string                  `json:"id,omitempty"`
+		InvoiceID      string                  `json:"invoice_id,omitempty"`
+		Links          []Link                  `json:"links,omitempty"`
+		Breakdown      *SellerPayableBreakdown `json:"seller_payable_breakdown,omitempty"`
 	}
 
 	// ChargeModel struct
@@ -734,14 +736,31 @@ type (
 
 	// Refund struct
 	Refund struct {
-		ID            string       `json:"id,omitempty"`
-		Amount        *Amount      `json:"amount,omitempty"`
-		InvoiceID     string       `json:"invoice_id,omitempty"`
-		CreateTime    PTime        `json:"create_time,omitempty"`
-		Status        RefundStatus `json:"state,omitempty"`
-		CaptureID     string       `json:"capture_id,omitempty"`
-		ParentPayment string       `json:"parent_payment,omitempty"`
-		UpdateTime    PTime        `json:"update_time,omitempty"`
+		ID            string                  `json:"id,omitempty"`
+		Amount        *Amount                 `json:"amount,omitempty"`
+		InvoiceID     string                  `json:"invoice_id,omitempty"`
+		CreateTime    PTime                   `json:"create_time,omitempty"`
+		Status        RefundStatus            `json:"state,omitempty"`
+		NoteToPayer   string                  `json:"note_to_payer"`
+		CaptureID     string                  `json:"capture_id,omitempty"`
+		ParentPayment string                  `json:"parent_payment,omitempty"`
+		UpdateTime    PTime                   `json:"update_time,omitempty"`
+		Breakdown     *SellerPayableBreakdown `json:"seller_payable_breakdown"`
+	}
+
+	SellerPayableBreakdown struct {
+		// gross_amount object
+		// The amount that the payee refunded to the payer.
+		// Read only.
+		GrossAmount *Money `json:"gross_amount,omitempty"`
+		// paypal_fee object
+		// The PayPal fee that was refunded to the payer. This fee might not match the PayPal fee that the payee paid when the payment was captured.
+		// Read only.
+		PaypalFee *Money `json:"paypal_fee,omitempty"`
+		// net_amount object
+		// The net amount that the payee's account is debited, if the payee holds funds in the currency for this refund. The net amount is calculated as gross_amount minus paypal_fee minus platform_fees.
+		// Read only.
+		NetAmount *Money `json:"net_amount,omitempty"`
 	}
 
 	RefundRequest struct {
