@@ -2,6 +2,7 @@ package paypal
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"net/http"
 )
@@ -54,8 +55,15 @@ func (c *Client) VoidAuthorization(authID string) error {
 // PayPal recommends to reauthorize payment after ~3 days
 // Endpoint: POST /v2/payments/authorization/ID/reauthorize
 func (c *Client) ReauthorizeAuthorization(authID string, a *Amount) (*Authorization, error) {
-	buf := bytes.NewBuffer([]byte(`{"amount":{"currency":"` + a.Currency + `","total":"` + a.Total + `"}}`))
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s%s", c.APIBase, "/v2/payments/authorizations/"+authID+"/reauthorize"), buf)
+	// buf := bytes.NewBuffer([]byte(`{"amount":{"currenct_":"` + a.Currency + `","total":"` + a.Total + `"}}`))
+	body, berr := json.Marshal(&struct {
+		Amount *Amount `json:"amount,omitempty"`
+	}{a})
+	if berr != nil {
+		return nil, berr
+	}
+	buf := bytes.NewBuffer(body)
+	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("%s%s", c.APIBase, "/v2/payments/authorizations/"+authID+"/reauthorize"), buf)
 	auth := &Authorization{}
 
 	if err != nil {
