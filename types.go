@@ -771,13 +771,15 @@ type (
 
 	// RefundResponse .
 	RefundResponse struct {
-		ID          string       `json:"id,omitempty"`
-		InvoiceID   string       `json:"invoice_id,omitempty"`
-		Status      RefundStatus `json:"status,omitempty"`
-		Links       []Link       `json:"links,omitempty"`
-		NoteToPayer string       `json:"note_to_payer,omitempty"`
-		CreateTime  PTime        `json:"create_time,omitempty"`
-		UpdateTime  PTime        `json:"update_time,omitempty"`
+		ID          string                  `json:"id,omitempty"`
+		InvoiceID   string                  `json:"invoice_id,omitempty"`
+		Amount      *Amount                 `json:"amount,omitempty"`
+		Status      RefundStatus            `json:"status,omitempty"`
+		Links       []Link                  `json:"links,omitempty"`
+		NoteToPayer string                  `json:"note_to_payer,omitempty"`
+		Breakdown   *SellerPayableBreakdown `json:"seller_payable_breakdown,omitempty"`
+		CreateTime  PTime                   `json:"create_time,omitempty"`
+		UpdateTime  PTime                   `json:"update_time,omitempty"`
 	}
 
 	// Related struct
