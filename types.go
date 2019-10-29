@@ -764,7 +764,6 @@ type (
 	}
 
 	RefundRequest struct {
-		ID          string  `json:"id,omitempty"`
 		Amount      *Amount `json:"amount,omitempty"`
 		InvoiceID   string  `json:"invoice_id,omitempty"`
 		NoteToPayer string  `json:"note_to_payer,omitempty"`
