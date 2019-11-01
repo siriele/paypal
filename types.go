@@ -951,15 +951,15 @@ type (
 	}
 
 	WebhookEvent struct {
-		ID              string           `json:"id"`
-		CreateTime      time.Time        `json:"create_time"`
-		ResourceType    WHResourceType   `json:"resource_type"`
-		EventType       string           `json:"event_type"`
-		Summary         string           `json:"summary,omitempty"`
-		Resource        *json.RawMessage `json:"resource,omitempty"`
-		Links           []Link           `json:"links"`
-		EventVersion    string           `json:"event_version,omitempty"`
-		ResourceVersion string           `json:"resource_version,omitempty"`
+		ID              string          `json:"id"`
+		CreateTime      time.Time       `json:"create_time"`
+		ResourceType    WHResourceType  `json:"resource_type"`
+		EventType       string          `json:"event_type"`
+		Summary         string          `json:"summary,omitempty"`
+		Resource        json.RawMessage `json:"resource,omitempty"`
+		Links           []Link          `json:"links"`
+		EventVersion    string          `json:"event_version,omitempty"`
+		ResourceVersion string          `json:"resource_version,omitempty"`
 	}
 
 	Resource struct {
