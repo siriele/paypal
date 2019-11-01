@@ -951,15 +951,15 @@ type (
 	}
 
 	WebhookEvent struct {
-		ID              string    `json:"id"`
-		CreateTime      time.Time `json:"create_time"`
-		ResourceType    string    `json:"resource_type"`
-		EventType       string    `json:"event_type"`
-		Summary         string    `json:"summary,omitempty"`
-		Resource        Resource  `json:"resource"`
-		Links           []Link    `json:"links"`
-		EventVersion    string    `json:"event_version,omitempty"`
-		ResourceVersion string    `json:"resource_version,omitempty"`
+		ID              string           `json:"id"`
+		CreateTime      time.Time        `json:"create_time"`
+		ResourceType    WHResourceType   `json:"resource_type"`
+		EventType       string           `json:"event_type"`
+		Summary         string           `json:"summary,omitempty"`
+		Resource        *json.RawMessage `json:"resource,omitempty"`
+		Links           []Link           `json:"links"`
+		EventVersion    string           `json:"event_version,omitempty"`
+		ResourceVersion string           `json:"resource_version,omitempty"`
 	}
 
 	Resource struct {
@@ -1018,6 +1018,127 @@ type (
 	Consent struct {
 		Type    string `json:"type"`
 		Granted bool   `json:"granted"`
+	}
+	/*
+			{
+		  "dispute_id": "PP-D-4012",
+		  "create_time": "2019-04-11T04:18:00.000Z",
+		  "update_time": "2019-04-21T04:19:08.000Z",
+		  "disputed_transactions": [
+		    {
+		      "seller_transaction_id": "3BC38643YC807283D",
+		      "create_time": "2019-04-11T04:16:58.000Z",
+		      "transaction_status": "REVERSED",
+		      "gross_amount": {
+		        "currency_code": "USD",
+		        "value": "192.00"
+		      },
+		      "buyer": {
+		        "name": "Lupe Justin"
+		      },
+		      "seller": {
+		        "email": "merchant@example.com",
+		        "merchant_id": "5U29WL78XSAEL",
+		        "name": "Lesley Paul"
+		      }
+		    }
+		  ],
+		  "reason": "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED",
+		  "status": "RESOLVED",
+		  "dispute_amount": {
+		    "currency_code": "USD",
+		    "value": "96.00"
+		  },
+		  "dispute_outcome": {
+		    "outcome_code": "RESOLVED_BUYER_FAVOUR",
+		    "amount_refunded": {
+		      "currency_code": "USD",
+		      "value": "96.00"
+		    }
+		  },
+		  "dispute_life_cycle_stage": "CHARGEBACK",
+		  "dispute_channel": "INTERNAL",
+		  "messages": [
+		    {
+		      "posted_by": "BUYER",
+		      "time_posted": "2019-04-11T04:18:04.000Z",
+		      "content": "SNAD case created through automation"
+		    }
+		  ],
+		  "extensions": {
+		    "merchandize_dispute_properties": {
+		      "issue_type": "SERVICE",
+		      "service_details": {
+		        "sub_reasons": [
+		          "INCOMPLETE"
+		        ],
+		        "purchase_url": "https://ebay.in"
+		      }
+		    }
+		  },
+		  "offer": {
+		    "buyer_requested_amount": {
+		      "currency_code": "USD",
+		      "value": "96.00"
+		    }
+		  },
+		  "links": [
+		    {
+		      "href": "https://api.sandbox.paypal.com/v1/customer/disputes/PP-D-4012",
+		      "rel": "self",
+		      "method": "GET"
+		    }
+		  ]
+		}
+	*/
+	Dispute struct {
+		DisputeID      string               `json:"dispute_id,omitempty"`
+		CreateTime     PTime                `json:"create_time,omitempty"`
+		UpdateTime     PTime                `json:"update_time,omitempty"`
+		Transactions   []DisputeTransaction `json:"disputed_transactions,omitempty"`
+		Reason         DisputeReason        `json:"reason"`
+		Status         DisputeStatus        `json:"status"`
+		DisputeAmount  *Money               `json:"dispute_amount"`
+		DisputeOutcome struct {
+			OutcomeCode    string `json:"outcome_code"`
+			AmountRefunded *Money `json:"amount_refunded,omitempty"`
+		} `json:"dispute_outcome"`
+
+		Stage          DisputeStage `json:"dispute_life_cycle_stage"`
+		DisputeChannel string       `json:"dispute_channel"`
+		Messages       []struct {
+			PostedBy   string `json:"posted_by"`
+			TimePosted PTime  `json:"time_posted"`
+			Content    string `json:"content"`
+		} `json:"messages"`
+		Extensions struct {
+			Properties struct {
+				IssueType      string `json:"issue_type"`
+				ServiceDetails struct {
+					SubReasons  []string `json:"sub_reasons"`
+					PurchaseURL string   `json:"purchase_url"`
+				} `json:"service_details"`
+			} `json:"merchandize_dispute_properties"`
+		} `json:"extensions"`
+		Offer DisputeOffer `json:"offer,omitempty"`
+		Links []Link       `json:"links,omitempty"`
+	}
+	DisputeOffer struct {
+		RequestedAmount *Money `json:"buyer_requested_amount"`
+	}
+	DisputeTransaction struct {
+		SellerTransactionID string            `json:"seller_transaction_id,omitempty"`
+		CreateTime          PTime             `json:"create_time,omitempty"`
+		Status              TransactionStatus `json:"transaction_status,omitempty"`
+		GrossAmount         *Money            `json:"gross_amount"`
+		Buyer               struct {
+			Name string `json:"name"`
+		} `json:"buyer"`
+		Seller struct {
+			Email      string `json:"email,omitempty"`
+			MerchantID string `json:"merchant_id,omitempty"`
+			Name       string `json:"name,omitempty"`
+		} `json:"seller"`
 	}
 )
 
@@ -1147,4 +1268,117 @@ const (
 	RefundStatusPending RefundStatus = "PENDING"
 	// RefundStatusCompleted is COMPLETED. The funds for this transaction were debited to the customer's account.
 	RefundStatusCompleted RefundStatus = "COMPLETED"
+)
+
+type DisputeStatus string
+
+const (
+	//The dispute is open.
+	DisputeStatusOpen DisputeStatus = "OPEN"
+	//The dispute is waiting for a response from the customer.
+	DisputeStatusWaitingForBuyerResponse DisputeStatus = "WAITING_FOR_BUYER_RESPONSE"
+	//The dispute is waiting for a response from the merchant.
+	DisputeStatusWaitingForSellerResponse DisputeStatus = "WAITING_FOR_SELLER_RESPONSE"
+	//The dispute is under review with PayPal.
+	DisputeStatusUnderReview DisputeStatus = "UNDER_REVIEW"
+	//The dispute is resolved.
+	DisputeStatusResolved DisputeStatus = "RESOLVED"
+	//The default status if the dispute does not have one
+	//of the other statuses.
+	DisputeStatusOther DisputeStatus = "OTHER"
+)
+
+type DisputeReason string
+
+const (
+
+	// The customer did not receive the merchandise or service.
+	DisputeReasonMerchandiseOrServiceNotReceived DisputeReason = "MERCHANDISE_OR_SERVICE_NOT_RECEIVED"
+	// The customer reports that the merchandise or service is not as described.
+	DisputeReasonMerchandiseOrServiceNotAsDescribed DisputeReason = "MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED"
+	// The customer did not authorize purchase of the merchandise or service.
+	DisputeReasonUnauthorised DisputeReason = "UNAUTHORISED"
+	// The refund or credit was not processed for the customer.
+	DisputeReasonCreditNotProcessed DisputeReason = "CREDIT_NOT_PROCESSED"
+	// The transaction was a duplicate.
+	DisputeReasonDuplicateTransaction DisputeReason = "DUPLICATE_TRANSACTION"
+	// The customer was charged an incorrect amount.
+	DisputeReasonIncorrectAmount DisputeReason = "INCORRECT_AMOUNT"
+	// The customer paid for the transaction through other means.
+	DisputeReasonPaymentByOtherMeans DisputeReason = "PAYMENT_BY_OTHER_MEANS"
+	// The customer was being charged for a subscription or a recurring transaction that was canceled.
+	DisputeReasonCanceledRecurringBilling DisputeReason = "CANCELED_RECURRING_BILLING"
+	// A problem occurred with the remittance.
+	DisputeReasonProblemWithRemittance DisputeReason = "PROBLEM_WITH_REMITTANCE"
+	// Other.
+	DisputeReasonOther DisputeReason = "OTHER"
+)
+
+type WHResourceType string
+
+const (
+	WHResourceTypeCheckout      WHResourceType = "checkout"
+	WHResourceTypePayment       WHResourceType = "payment"
+	WHResourceTypeCapture       WHResourceType = "capture"
+	WHResourceTypeOrder         WHResourceType = "order"
+	WHResourceTypeRefund        WHResourceType = "refund"
+	WHResourceTypeAuthorization WHResourceType = "authorization"
+	WHResourceTypeDispute       WHResourceType = "dispute"
+)
+
+type DisputeStage string
+
+const (
+	// A customer and merchant interact in an attempt to resolve a
+	// dispute without escalation to PayPal. Occurs when the customer:
+	// Has not received goods or a service.
+	// Reports that the received goods or service are not as described.
+	// Needs more details, such as a copy of the transaction or a receipt.
+	DisputeStageInquiry DisputeStage = "INQUIRY"
+
+	// A customer or merchant escalates an inquiry to a claim,
+	// which authorizes PayPal to investigate the case and make
+	// a determination. Occurs only when the dispute channel
+	// is INTERNAL. This stage is a PayPal dispute lifecycle stage and not a credit card or debit card chargeback. All notes that the customer sends in this stage are visible to PayPal agents only. The customer must wait for PayPal’s response before the customer can take further action. In this stage, PayPal shares dispute details with the merchant, who can complete one of these actions:
+	// Accept the claim.
+	// Submit evidence to challenge the claim.
+	// Make an offer to the customer to resolve the claim.
+	DisputeStageChargeback DisputeStage = "CHARGEBACK"
+
+	// The first appeal stage for merchants. A merchant can appeal
+	// a chargeback if PayPal's decision is not in the merchant's
+	// favor. If the merchant does not appeal within the appeal
+	// period, PayPal considers the case resolved.
+	DisputeStagePreArbitration DisputeStage = "PRE_ARBITRATION"
+	// The second appeal stage for merchants. A merchant can appeal
+	// a dispute for a second time if the first appeal was denied.
+	// If the merchant does not appeal within the appeal period,
+	// the case returns to a resolved status in pre-arbitration stage.
+	DisputeStageArbitration DisputeStage = "ARBITRATION"
+)
+
+type TransactionStatus string
+
+const (
+
+	// The transaction processing completed.
+	TransactionStatusCompleted TransactionStatus = "COMPLETED"
+	// The items in the transaction are unclaimed. If they are not claimed within 30 days, the funds are returned to the sender.
+	TransactionStatusUnclaimed TransactionStatus = "UNCLAIMED"
+	// The transaction was denied.
+	TransactionStatusDenied TransactionStatus = "DENIED"
+	// The transaction failed.
+	TransactionStatusFailed TransactionStatus = "FAILED"
+	// The transaction is on hold.
+	TransactionStatusHeld TransactionStatus = "HELD"
+	// The transaction is waiting to be processed.
+	TransactionStatusPending TransactionStatus = "PENDING"
+	// The payment for the transaction was partially refunded.
+	TransactionStatusPartiallyRefunded TransactionStatus = "PARTIALLY_REFUNDED"
+	// The payment for the transaction was successfully refunded.
+	TransactionStatusRefunded TransactionStatus = "REFUNDED"
+	// The payment for the transaction was reversed due to a chargeback or other reversal type.
+	TransactionStatusReversed TransactionStatus = "REVERSED"
+	// The transaction is cancelled.
+	TransactionStatusCancelled TransactionStatus = "CANCELLED"
 )
