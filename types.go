@@ -1130,6 +1130,7 @@ type (
 		SellerTransactionID string            `json:"seller_transaction_id,omitempty"`
 		CreateTime          PTime             `json:"create_time,omitempty"`
 		Status              TransactionStatus `json:"transaction_status,omitempty"`
+		InvoiceNumber       string            `json:"invoice_number"`
 		GrossAmount         *Money            `json:"gross_amount"`
 		Buyer               struct {
 			Name string `json:"name"`
