@@ -1318,7 +1318,7 @@ const (
 type WHResourceType string
 
 const (
-	WHResourceTypeCheckout      WHResourceType = "checkout"
+	WHResourceTypeCheckout      WHResourceType = "checkout-order"
 	WHResourceTypePayment       WHResourceType = "payment"
 	WHResourceTypeCapture       WHResourceType = "capture"
 	WHResourceTypeOrder         WHResourceType = "order"
