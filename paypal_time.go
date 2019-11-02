@@ -1,10 +1,14 @@
 package paypal
 
 import (
+	"strings"
 	"time"
 )
 
-const DateFormat = "2006-01-02T15:04:05Z"
+const (
+	DateFormat           = "2006-01-02T15:04:05.000Z"
+	DateFormatWithOffset = "2006-01-02T15:04:05-07:00"
+)
 
 type PTime struct{ time.Time }
 
@@ -14,7 +18,11 @@ func (t *PTime) UnmarshalJSON(data []byte) error {
 		return nil
 	}
 
-	tm, err := time.Parse(DateFormat, sdata[1:len(sdata)-1])
+	format := DateFormat
+	if !strings.Contains(sdata, "Z") {
+		format = DateFormatWithOffset
+	}
+	tm, err := time.Parse(format, sdata[1:len(sdata)-1])
 	if err != nil {
 		return err
 	}

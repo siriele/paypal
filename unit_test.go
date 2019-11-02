@@ -145,6 +145,7 @@ func TestTypeErrorResponseTwo(t *testing.T) {
 }
 
 func TestTypePayoutResponse(t *testing.T) {
+	t.SkipNow()
 	response := `{
 		"batch_header":{
 			"payout_batch_id":"G4E6WJE6Y4853",
