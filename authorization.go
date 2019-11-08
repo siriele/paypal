@@ -29,6 +29,8 @@ func (c *Client) CaptureAuthorization(authID string, paymentCaptureRequest *Paym
 	req, err := c.NewRequest("POST", fmt.Sprintf("%s%s", c.APIBase, "/v2/payments/authorizations/"+authID+"/capture"), paymentCaptureRequest)
 	paymentCaptureResponse := &PaymentCaptureResponse{}
 
+	req.Header.Set(HeaderPrefer, HeaderPreferRepresentation)
+
 	if err != nil {
 		return paymentCaptureResponse, err
 	}

@@ -27,7 +27,7 @@ func (c *Client) RefundCapture(captureID string, request RefundRequest) (*Refund
 	if err != nil {
 		return nil, err
 	}
-
+	req.Header.Set(HeaderPrefer, HeaderPreferRepresentation)
 	if err = c.SendWithAuth(req, refund); err != nil {
 		return nil, err
 	}
