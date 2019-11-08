@@ -417,7 +417,7 @@ type (
 
 	// Item struct
 	Item struct {
-		Quantity    uint32 `json:"quantity"`
+		Quantity    string `json:"quantity"`
 		Name        string `json:"name"`
 		Price       string `json:"price"`
 		Currency    string `json:"currency"`
