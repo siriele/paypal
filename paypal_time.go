@@ -6,6 +6,7 @@ import (
 )
 
 const (
+	DateFormatNoDot      = "2006-01-02T15:04:05Z"
 	DateFormat           = "2006-01-02T15:04:05.000Z"
 	DateFormatWithOffset = "2006-01-02T15:04:05-07:00"
 )
@@ -19,9 +20,18 @@ func (t *PTime) UnmarshalJSON(data []byte) error {
 	}
 
 	format := DateFormat
-	if !strings.Contains(sdata, "Z") {
+	noZ := !strings.Contains(sdata, "Z")
+	noDot := !strings.Contains(sdata, ".")
+	switch {
+	case noDot && noZ:
 		format = DateFormatWithOffset
+	case !noDot && !noZ:
+		format = DateFormat
+	case !noZ && noDot:
+		format = DateFormatNoDot
+
 	}
+
 	tm, err := time.Parse(format, sdata[1:len(sdata)-1])
 	if err != nil {
 		return err
