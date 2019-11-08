@@ -210,11 +210,12 @@ type (
 
 	// https://developer.paypal.com/docs/api/payments/v2/#authorizations_capture
 	PaymentCaptureRequest struct {
-		InvoiceID      string `json:"invoice_id,omitempty"`
-		NoteToPayer    string `json:"note_to_payer,omitempty"`
-		SoftDescriptor string `json:"soft_descriptor,omitempty"`
-		Amount         *Money `json:"amount,omitempty"`
-		FinalCapture   bool   `json:"final_capture,omitempty"`
+		InvoiceID           string             `json:"invoice_id,omitempty"`
+		NoteToPayer         string             `json:"note_to_payer,omitempty"`
+		SoftDescriptor      string             `json:"soft_descriptor,omitempty"`
+		Amount              *Money             `json:"amount,omitempty"`
+		FinalCapture        bool               `json:"final_capture,omitempty"`
+		PaymentInstructions PaymentInstruction `json:"payment_instruction"`
 	}
 
 	SellerProtection struct {
@@ -228,13 +229,15 @@ type (
 	}
 
 	PaymentCaptureResponse struct {
-		Status           CaptureStatus         `json:"status,omitempty"`
-		StatusDetails    *CaptureStatusDetails `json:"status_details,omitempty"`
-		ID               string                `json:"id,omitempty"`
-		Amount           *Money                `json:"amount,omitempty"`
-		InvoiceID        string                `json:"invoice_id,omitempty"`
-		FinalCapture     bool                  `json:"final_capture,omitempty"`
-		DisbursementMode string                `json:"disbursement_mode,omitempty"`
+		ID               string                     `json:"id,omitempty"`
+		Status           CaptureStatus              `json:"status,omitempty"`
+		StatusDetails    *CaptureStatusDetails      `json:"status_details,omitempty"`
+		Amount           *Money                     `json:"amount,omitempty"`
+		InvoiceID        string                     `json:"invoice_id,omitempty"`
+		CustomID         string                     `json:"custom_id,omitempty"`
+		FinalCapture     bool                       `json:"final_capture,omitempty"`
+		DisbursementMode string                     `json:"disbursement_mode,omitempty"`
+		Breakdown        *SellerReceivableBreakdown `json:"seller_receivable_breakdown,omitempty"`
 	}
 
 	// CaptureOrderRequest - https://developer.paypal.com/docs/api/orders/v2/#orders_capture
@@ -449,7 +452,35 @@ type (
 		Value     string                       `json:"value"`
 		Breakdown *PurchaseUnitAmountBreakdown `json:"breakdown,omitempty"`
 	}
+	ExchangeRate struct {
+		SourceCurrency string `json:"source_currency"`
+		TargetCurrency string `json:"target_currency"`
+		Value          string `json:"value"`
+	}
 
+	SellerReceivableBreakdown struct {
+
+		// paypal_fee object
+		// The applicable fee for this captured payment.
+		// Read only.
+		PaypalFee *Money `json:"paypal_fee,omitempty"`
+		// net_amount object
+		// The net amount that the payee receives for this captured payment in their PayPal account. The net amount is computed as gross_amount minus the paypal_fee minus the platform_fees.
+		// Read only.
+		NetAmount *Money `json:"net_amount,omitempty"`
+		// receivable_amount object
+		// The net amount that is credited to the payee's PayPal account. Returned only when the currency of the captured payment is different from the currency of the PayPal account where the payee wants to credit the funds. The amount is computed as net_amount times exchange_rate.
+		// Read only.
+		ReceivableAmount *Money `json:"receivable_amount,omitempty"`
+		// exchange_rate object
+		// The exchange rate that determines the amount that is credited to the payee's PayPal account. Returned when the currency of the captured payment is different from the currency of the PayPal account where the payee wants to credit the funds.
+		// Read only.
+		ExchangeRate *ExchangeRate `json:"exchange_rate,omitempty"`
+		// platform_fees array (contains the platform_fee object)
+		// An array of platform or partner fees, commissions, or brokerage fees that associated with the captured payment.
+		// Read only.
+		PlatformFees []PlatformFee `json:"platform_fees,omitempty"`
+	}
 	// PurchaseUnitAmountBreakdown struct
 	PurchaseUnitAmountBreakdown struct {
 		ItemTotal        *Money `json:"item_total,omitempty"`
@@ -761,6 +792,8 @@ type (
 		// The net amount that the payee's account is debited, if the payee holds funds in the currency for this refund. The net amount is calculated as gross_amount minus paypal_fee minus platform_fees.
 		// Read only.
 		NetAmount *Money `json:"net_amount,omitempty"`
+
+		PlatformFees []PlatformFee
 	}
 
 	RefundRequest struct {
