@@ -135,13 +135,14 @@ func (c *Client) SendWithAuth(req *http.Request, v interface{}) error {
 					return err
 				}
 			}
-			req.Header.Set("Authorization", "Bearer "+c.Token.Token)
 		} else if c.Token == nil {
 			// c.Token will be updated in GetAccessToken call
 			if _, err := c.GetAccessToken(); err != nil {
 				return err
 			}
 		}
+		req.Header.Set("Authorization", "Bearer "+c.Token.Token)
+
 		return nil
 	}()
 	if cerr != nil {
