@@ -169,19 +169,19 @@ func (c *Client) NewRequest(method, url string, payload interface{}) (*http.Requ
 
 // log will dump request and response to the log file
 func (c *Client) log(r *http.Request, resp *http.Response) {
-	if c.Log != nil {
-		var (
-			reqDump  []byte
-			respDump []byte
-		)
 
-		if r != nil {
-			reqDump, _ = httputil.DumpRequestOut(r, true)
-		}
-		if resp != nil {
-			respDump, _ = httputil.DumpResponse(resp, true)
-		}
+	var (
+		reqDump  []byte
+		respDump []byte
+	)
 
-		fmt.Printf("Request: %s\nResponse: %s\n", string(reqDump), string(respDump))
+	if r != nil {
+		reqDump, _ = httputil.DumpRequestOut(r, true)
 	}
+	if resp != nil {
+		respDump, _ = httputil.DumpResponse(resp, true)
+	}
+
+	fmt.Printf("Request: %s\nResponse: %s\n", string(reqDump), string(respDump))
+
 }
