@@ -171,17 +171,17 @@ func (c *Client) NewRequest(method, url string, payload interface{}) (*http.Requ
 func (c *Client) log(r *http.Request, resp *http.Response) {
 	if c.Log != nil {
 		var (
-			reqDump  string
+			reqDump  []byte
 			respDump []byte
 		)
 
 		if r != nil {
-			reqDump = fmt.Sprintf("%s %s. Data: %s", r.Method, r.URL.String(), r.Form.Encode())
+			reqDump, _ = httputil.DumpRequestOut(r, true)
 		}
 		if resp != nil {
 			respDump, _ = httputil.DumpResponse(resp, true)
 		}
 
-		c.Log.Write([]byte(fmt.Sprintf("Request: %s\nResponse: %s\n", reqDump, string(respDump))))
+		fmt.Printf("Request: %s\nResponse: %s\n", string(reqDump), string(respDump))
 	}
 }
