@@ -459,6 +459,8 @@ type (
 	}
 
 	SellerReceivableBreakdown struct {
+		// The amount for this captured payment.
+		GrossAmount *Money `json:"gross_amount,omitempty"`
 
 		// paypal_fee object
 		// The applicable fee for this captured payment.
