@@ -62,12 +62,14 @@ const (
 	OrderIntentAuthorize string = "AUTHORIZE"
 )
 
+type ItemCategory string
+
 // Possible values for `category` in Item
 //
 // https://developer.paypal.com/docs/api/orders/v2/#definition-item
 const (
-	ItemCategoryDigitalGood  string = "DIGITAL_GOODS"
-	ItemCategoryPhysicalGood string = "PHYSICAL_GOODS"
+	ItemCategoryDigitalGood  ItemCategory = "DIGITAL_GOODS"
+	ItemCategoryPhysicalGood ItemCategory = "PHYSICAL_GOODS"
 )
 
 // Possible values for `shipping_preference` in ApplicationContext
@@ -366,13 +368,13 @@ type (
 
 	// Details structure used in Amount structures as optional value
 	Details struct {
-		Subtotal         string `json:"subtotal,omitempty"`
-		Shipping         string `json:"shipping,omitempty"`
-		Tax              string `json:"tax,omitempty"`
-		HandlingFee      string `json:"handling_fee,omitempty"`
-		ShippingDiscount string `json:"shipping_discount,omitempty"`
-		Insurance        string `json:"insurance,omitempty"`
-		GiftWrap         string `json:"gift_wrap,omitempty"`
+		Subtotal         *Money `json:"subtotal,omitempty"`
+		Shipping         *Money `json:"shipping,omitempty"`
+		Tax              *Money `json:"tax,omitempty"`
+		HandlingFee      *Money `json:"handling_fee,omitempty"`
+		ShippingDiscount *Money `json:"shipping_discount,omitempty"`
+		Insurance        *Money `json:"insurance,omitempty"`
+		GiftWrap         *Money `json:"gift_wrap,omitempty"`
 	}
 
 	// ErrorResponseDetail struct
@@ -422,15 +424,15 @@ type (
 
 	// Item struct
 	Item struct {
-		Quantity    string `json:"quantity"`
-		Name        string `json:"name"`
-		Price       string `json:"price"`
-		Currency    string `json:"currency"`
-		SKU         string `json:"sku,omitempty"`
-		Description string `json:"description,omitempty"`
-		Tax         string `json:"tax,omitempty"`
-		UnitAmount  *Money `json:"unit_amount,omitempty"`
-		Category    string `json:"category,omitempty"`
+		Quantity    string       `json:"quantity"`
+		Name        string       `json:"name"`
+		Price       string       `json:"price"`
+		Currency    string       `json:"currency"`
+		SKU         string       `json:"sku,omitempty"`
+		Description string       `json:"description,omitempty"`
+		Tax         *Money       `json:"tax,omitempty"`
+		UnitAmount  *Money       `json:"unit_amount,omitempty"`
+		Category    ItemCategory `json:"category,omitempty"`
 	}
 
 	// ItemList struct
