@@ -238,6 +238,8 @@ type (
 		FinalCapture     bool                       `json:"final_capture,omitempty"`
 		DisbursementMode string                     `json:"disbursement_mode,omitempty"`
 		Breakdown        *SellerReceivableBreakdown `json:"seller_receivable_breakdown,omitempty"`
+		CreateTime       PTime                      `json:"create_time,omitempty"`
+		UpdateTime       PTime                      `json:"update_time,omitempty"`
 	}
 
 	// CaptureOrderRequest - https://developer.paypal.com/docs/api/orders/v2/#orders_capture
