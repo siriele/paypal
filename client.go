@@ -183,12 +183,11 @@ func (c *Client) log(r *http.Request, resp *http.Response) {
 	if c.Log != nil {
 		if r != nil {
 			reqDump, _ = httputil.DumpRequestOut(r, true)
+			c.Log.Write([]byte(fmt.Sprintf("\nRequest: %s\n", reqDump)))
 		}
 		if resp != nil {
 			respDump, _ = httputil.DumpResponse(resp, true)
+			c.Log.Write([]byte(fmt.Sprintf("\nRequest: %s\n", respDump)))
 		}
-		c.Log.Write([]byte(fmt.Sprintf("Request: %s\nResponse: %s\n", string(reqDump), string(respDump))))
-
 	}
-
 }

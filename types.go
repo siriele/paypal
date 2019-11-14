@@ -283,16 +283,15 @@ type (
 
 	// Capture struct
 	Capture struct {
-		Amount         *Amount                 `json:"amount,omitempty"`
-		IsFinalCapture bool                    `json:"is_final_capture"`
-		CreateTime     PTime                   `json:"create_time,omitempty"`
-		UpdateTime     PTime                   `json:"update_time,omitempty"`
-		Status         CaptureStatus           `json:"state,omitempty"`
-		ParentPayment  string                  `json:"parent_payment,omitempty"`
-		ID             string                  `json:"id,omitempty"`
-		InvoiceID      string                  `json:"invoice_id,omitempty"`
-		Links          []Link                  `json:"links,omitempty"`
-		Breakdown      *SellerPayableBreakdown `json:"seller_payable_breakdown,omitempty"`
+		Amount         *Amount                    `json:"amount,omitempty"`
+		IsFinalCapture bool                       `json:"final_capture"`
+		CreateTime     PTime                      `json:"create_time,omitempty"`
+		UpdateTime     PTime                      `json:"update_time,omitempty"`
+		Status         CaptureStatus              `json:"status,omitempty"`
+		ID             string                     `json:"id,omitempty"`
+		InvoiceID      string                     `json:"invoice_id,omitempty"`
+		Links          []Link                     `json:"links,omitempty"`
+		Breakdown      *SellerReceivableBreakdown `json:"seller_receivable_breakdown,omitempty"`
 	}
 
 	// ChargeModel struct
