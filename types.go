@@ -1060,7 +1060,7 @@ type (
 
 	Tracker struct {
 		TransactionID    string         `json:"transaction_id,omitempty"`
-		TrackingNumber   string         `json:"tracking_number,omitempty"`
+		TrackingNumber   string         `json:"tracking_number"`
 		Status           TrackingStatus `json:"status,omitempty"`
 		Carrier          string         `json:"carrier,omitempty"` // Other
 		CarrierNameOther string         `json:"carrier_name_other,omitempty"`
