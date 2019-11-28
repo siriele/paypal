@@ -1057,6 +1057,34 @@ type (
 		Type    string `json:"type"`
 		Granted bool   `json:"granted"`
 	}
+
+	Tracker struct {
+		TransactionID    string         `json:"transaction_id,omitempty"`
+		TrackingNumber   string         `json:"tracking_number,omitempty"`
+		Status           TrackingStatus `json:"status,omitempty"`
+		Carrier          string         `json:"carrier,omitempty"` // Other
+		CarrierNameOther string         `json:"carrier_name_other,omitempty"`
+	}
+
+	TrackersRequest struct {
+		Trackers []Tracker `json:"trackers"`
+	}
+	TrackersResponse struct {
+		Identifiers []TrackingIdentifier `json:"tracker_identifiers"`
+	}
+
+	TrackingIdentifier struct {
+		TransactionID  string  `json:"transaction_id,omitempty"`
+		TrackingNumber string  `json:"tracking_number,omitempty"`
+		Links          []Link  `json:"links"`
+		Errors         []Error `json:"errors"`
+	}
+	Error struct {
+		Name            string `json:"name"`
+		Message         string `json:"message"`
+		DebugID         string `json:"debug_id"`
+		InformationLink string `json:"information_link"`
+	}
 	/*
 			{
 		  "dispute_id": "PP-D-4012",
@@ -1431,4 +1459,56 @@ const (
 	// including the current state of the resource.
 	HeaderPreferRepresentation = "return=representation"
 	HeaderPrefer               = "Prefer"
+)
+
+type TrackingStatus string
+
+const (
+	//The shipment was cancelled and the tracking number no longer applies.
+	TrackingStatusCancelled TrackingStatus = "CANCELLED"
+	//The item was already delivered when the tracking number was uploaded.
+	TrackingStatusDelivered TrackingStatus = "DELIVERED"
+	// Either the buyer physically picked up the item or the
+	// seller delivered the item in person without involving
+	// any couriers or postal companies.
+	TrackingStatusLocalPickup TrackingStatus = "LOCAL_PICKUP"
+	//The item is on hold. Its shipment was temporarily stopped
+	// due to bad weather, a strike, customs, or another reason.
+	TrackingStatusOnHold TrackingStatus = "ON_HOLD"
+	//The item was shipped and is on the way.
+	TrackingStatusShipped TrackingStatus = "SHIPPED"
+	//The shipment was created.
+	TrackingStatusShipmentCreated TrackingStatus = "SHIPMENT_CREATED"
+	//The shipment was dropped off.
+	TrackingStatusDroppedOff TrackingStatus = "DROPPED_OFF"
+	//The shipment is in transit on its way to the buyer.
+	TrackingStatusInTransit TrackingStatus = "IN_TRANSIT"
+	//The shipment was returned.
+	TrackingStatusReturned TrackingStatus = "RETURNED"
+	//The label was printed for the shipment.
+	TrackingStatusLabelPrinted TrackingStatus = "LABEL_PRINTED"
+	//An error occurred with the shipment.
+	TrackingStatusError TrackingStatus = "ERROR"
+	//The shipment is unconfirmed.
+	TrackingStatusUnconfirmed TrackingStatus = "UNCONFIRMED"
+	//Pick-up failed for the shipment.
+	TrackingStatusPickupFailed TrackingStatus = "PICKUP_FAILED"
+	//The delivery was delayed for the shipment.
+	TrackingStatusDeliveryDelayed TrackingStatus = "DELIVERY_DELAYED"
+	//The delivery was scheduled for the shipment.
+	TrackingStatusDeliveryScheduled TrackingStatus = "DELIVERY_SCHEDULED"
+	//The delivery failed for the shipment.
+	TrackingStatusDeliveryFailed TrackingStatus = "DELIVERY_FAILED"
+	//The shipment is being returned.
+	TrackingStatusInreturn TrackingStatus = "INRETURN"
+	//The shipment is in process.
+	TrackingStatusInProcess TrackingStatus = "IN_PROCESS"
+	//The shipment is new.
+	TrackingStatusNew TrackingStatus = "NEW"
+	//If the shipment is cancelled for any reason, its state is void.
+	TrackingStatusVoid TrackingStatus = "VOID"
+	//The shipment was processed.
+	TrackingStatusProcessed TrackingStatus = "PROCESSED"
+	//The shipment was not shipped.
+	TrackingStatusNotShipped TrackingStatus = "NOT_SHIPPED"
 )

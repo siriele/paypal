@@ -1,6 +1,9 @@
 package paypal
 
-import "fmt"
+import (
+	"fmt"
+	"net/http"
+)
 
 /*
 
@@ -28,6 +31,20 @@ func (c *Client) RefundCapture(captureID string, request RefundRequest) (*Refund
 		return nil, err
 	}
 	req.Header.Set(HeaderPrefer, HeaderPreferRepresentation)
+	if err = c.SendWithAuth(req, refund); err != nil {
+		return nil, err
+	}
+
+	return refund, nil
+}
+
+func (c *Client) UpdateTracking(request TrackersRequest) (*TrackersResponse, error) {
+	refund := new(TrackersResponse)
+
+	req, err := c.NewRequest(http.MethodPost, fmt.Sprintf("%s%s", c.APIBase, "/v1/shipping/trackers-batch"), &request)
+	if err != nil {
+		return nil, err
+	}
 	if err = c.SendWithAuth(req, refund); err != nil {
 		return nil, err
 	}
